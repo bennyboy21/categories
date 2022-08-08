@@ -1,0 +1,203 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Categories - Play</title>
+</head>
+
+<style>
+    body {
+        background: white;
+        width:100vw;
+        height: 100vh;
+        margin:0px;
+        padding:0px;
+        overflow: hidden;
+    }
+
+    #categories-Name {
+        width:calc(100vw - 75px);
+        position: absolute;
+        font-weight:600;
+        color: rgb(31, 31, 31);
+        left: 50%;
+        transform: translate(-50%);
+        top:35px;
+        max-width: 250px;
+        font-size: 35px;
+        text-align: center;
+        font-family: Arial, Helvetica, sans-serif;
+    }
+
+    @media (min-width:500px) {
+        #container {
+            width:100vw;
+            height: 100vh;
+            background: rgba(255, 255, 255, 0.2);
+            backdrop-filter: blur(.5rem);
+            position: absolute;
+        }
+
+        .topic-Speacker {
+            border-radius: 100%;
+            position: absolute;
+        }
+
+        #one {
+            width:1000px;
+            height:1000px;
+            background: rgb(3, 97, 126);
+            top:-500px;
+            left: -250px;
+        }
+
+        #two {
+            width:700px;
+            height:700px;
+            background: rgb(22, 101, 192);
+            top:-250px;
+            right: -200px;
+        }
+
+        #three {
+            width:50vw;
+            height:50vw;
+            background: rgb(3, 126, 105);
+            bottom:-10vw;
+            left: -10vw;
+        }
+
+        #four {
+            width:350px;
+            height:350px;
+            background: rgb(8, 72, 109);
+            right:-75px;
+            bottom:-75px;
+        }
+
+        #five {
+            width:500px;
+            height:500px;
+            background: rgb(115, 166, 207);
+            top:50%;
+            left:50%;
+            transform: translate(-50%, -50%);
+        }
+
+        #start-Game-Container {
+            width:100vw;
+            height: 100vh;
+            position: fixed;
+            background: white;
+            max-width: 350px;
+            max-height: 250px;
+            border-radius: 5px;
+            top:50%;
+            left:50%;
+            transform: translate(-50%, -50%);
+        }
+
+        #categories-Name {
+            width:calc(100vw - 75px);
+            position: absolute;
+            font-weight:600;
+            color: rgb(31, 31, 31);
+            left: 50%;
+            transform: translate(-50%);
+            top:30px;
+            max-width: 250px;
+            font-size: 30px;
+            text-align: center;
+            font-family: Arial, Helvetica, sans-serif;
+        }
+    }
+
+    #start-Game-Container {
+        width:100vw;
+        height: 300px;
+        position: fixed;
+        background: white;
+        border-radius: 5px;
+        top:50%;
+        left:50%;
+        transform: translate(-50%, -50%);
+    }
+
+    #name-Input {
+        width:calc(100% - 50px);
+        height: 30px;
+        font-size: 20px;
+        padding: 10px;
+        border-radius: 5px;
+        border: none;
+        background: rgb(200, 200, 200);
+        position: fixed;
+        top:50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+    }
+
+    #name-Input::placeholder {
+        color: rgb(20, 20, 20);
+    }
+
+    input:focus {
+        outline: none;
+    }
+
+    #create-Game {
+        font-size: 20px;
+        padding: 10px 25px;
+        border-radius: 5px;
+        border: none;
+        background: rgb(0, 132, 255);
+        color: white;
+        opacity: 1;
+        position: fixed;
+        bottom: 20px;
+        left: 50%;
+        transform: translate(-50%);
+        transition: .25s;
+    }
+
+    #create-Game:hover {
+        cursor: pointer;
+        background: rgba(0, 132, 255, 0.9);
+        transition: .25s;
+    }
+</style>
+
+<script defer>
+    const queryString = window.location.search;
+    const urlParams = new URLSearchParams(queryString);
+    var myName = urlParams.get('name')
+
+    if(myName != undefined) {
+        document.getElementById("name-Input").value = myName
+    }
+
+    function createGame() {
+        var name = document.getElementById("name-Input").value
+        window.location = "game.html?name=" + name 
+    }
+</script>
+
+<body onload="loaded()">
+    <div id="bakground-Chats">
+        <div class="topic-Speacker" id="one"></div>
+        <div class="topic-Speacker" id="two"></div>
+        <div class="topic-Speacker" id="three"></div>
+        <div class="topic-Speacker" id="four"></div>
+        <div class="topic-Speacker" id="five"></div>
+    </div>
+    <div id="container">
+        <div id="start-Game-Container">        
+            <div id="categories-Name">Categories</div>
+            <input id="name-Input" type="text" placeholder="Name">
+            <button id="create-Game" onclick="createGame()">Play</button>
+        </div>
+    </div>
+</body>
+</html>

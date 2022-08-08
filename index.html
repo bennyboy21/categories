@@ -1,0 +1,766 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <script src="https://www.gstatic.com/firebasejs/7.21.0/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/7.21.0/firebase-auth.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/7.21.0/firebase-database.js"></script>
+    <script defer src="BibleBooks.js"></script>
+    <script defer src="names.js"></script>
+    <script defer src="Countries.js"></script>
+    <script defer src="Chemicals.js"></script>
+    <script defer src="categories.js"></script>
+    <title>Text It Now - Categories</title>
+</head>
+<style>
+    * {
+        font-family: Arial, Helvetica, sans-serif;
+    }
+
+    body {
+        user-select: none;
+        width:100vw;
+        height:100vh;
+        margin:0px;
+        background: white;
+    }
+
+    @media (min-width:499px) {
+        #game-Container {
+            box-shadow: 0px 1px 3px 1px rgba(0, 0, 0, 0.1);
+            border-radius: 10px;
+            width:325px;
+            height: 450px;
+            position: fixed;
+            background: white;
+            bottom: 25px;
+            right: 25px;
+            overflow: hidden;
+        }
+
+        #send-Button {
+            font-size: 17.5px;
+            padding: 10px 25px;
+            border-radius: 5px;
+            border: none;
+            background: rgb(225, 225, 225);
+            color:  black;
+            opacity: 0.25;
+            position: absolute;
+            bottom: 20px;
+            left: 50%;
+            transform: translate(-50%);
+            transition: .25s;
+        }
+
+        #send-Button.active {
+            font-size: 17.5px;
+            padding: 10px 25px;
+            border-radius: 5px;
+            border: none;
+            background: rgb(0, 132, 255);
+            color: white;
+            opacity: 1;
+            position: absolute;
+            bottom: 20px;
+            left: 50%;
+            transform: translate(-50%);
+            transition: .25s;
+        }
+
+        #send-Button.active:hover {
+            cursor: pointer;
+            background: rgb(0, 132, 255, 0.9);
+            transition: .25s;
+        }
+
+        #new-Game {
+            font-size: 17.5px;
+            padding: 10px 25px;
+            border-radius: 5px;
+            border: none;
+            background: rgb(0, 132, 255);
+            color: white;
+            z-index: -1;
+            position: absolute;
+            top: calc(50% + 215px);
+            opacity: 0;
+            left: 50%;
+            transform: translate(-50%);
+            transition: .25s;
+        }
+
+        #new-Game:hover {
+            cursor: pointer;
+            background: rgb(0, 132, 255, 0.9);
+            transition: .25s;
+        }
+
+        #game-Board {
+            width:100%;
+            max-width: 600px;
+            height:fit-content;
+            position: absolute;
+            overflow: scroll;
+            top:85px;
+            left: 50%;
+            transform: translate(-50%);
+            background: white;
+        }
+
+        #finding-Opponent {
+            display: flex;
+            color: white;
+            width:100%;
+            height:100%;
+            position: absolute;
+            top:50%;
+            left:50%;
+            background:rgba(0, 0, 0, 0.7);
+            justify-content: center;
+            align-items: center;
+            transform: translate(-50%, -50%);
+            transition: .25s;
+            opacity: 0;
+            z-index: -1;
+        }
+
+        #waiting-For-Opponent {
+            display: flex;
+            color: white;
+            width:100%;
+            height:100%;
+            position: absolute;
+            top:50%;
+            left:50%;
+            background:rgba(0, 0, 0, 0.7);
+            justify-content: center;
+            align-items: center;
+            transform: translate(-50%, -50%);
+            transition: .25s;
+            opacity: 0;
+            z-index: -1;
+        }
+
+        #end-Screen {
+            display: flex;
+            color: white;
+            width:100%;
+            height:100%;
+            position: absolute;
+            top:50%;
+            left:50%;
+            background:rgba(0, 0, 0, 0.7);
+            justify-content: center;
+            align-items: center;
+            transform: translate(-50%, -50%);
+            transition: .25s;
+            opacity: 0;
+            z-index: -1;
+        }
+
+        #your-Score-End-Screen {
+            font-size: 30px;
+        }
+
+        #dash {
+            font-size: 30px;
+            margin-left: 50px;
+            margin-right: 50px;
+        }
+
+        #opponent-Score-End-Screen {
+            font-size: 30px;
+        }
+
+        #top-Text {
+            position: fixed;
+            top:calc(50% - 50px);
+            transform: translate(0px, -50%);
+            font-size: 25px;
+        }
+    }
+
+    @media (max-width:499px) {
+        #game-Container {
+            width:100vw;
+            height:100vh;
+            position: fixed;
+            background: white;
+            top: 0px;
+            right: 0px;
+        }
+        
+        #send-Button {
+            font-size: 17.5px;
+            padding: 10px 25px;
+            border-radius: 5px;
+            border: none;
+            background: rgb(225, 225, 225);
+            color:  black;
+            opacity: 0.25;
+            position: fixed;
+            bottom: 20px;
+            left: 50%;
+            transform: translate(-50%);
+            transition: .25s;
+        }
+
+        #send-Button.active {
+            font-size: 17.5px;
+            padding: 10px 25px;
+            border-radius: 5px;
+            border: none;
+            background: rgb(0, 132, 255);
+            color: white;
+            opacity: 1;
+            position: fixed;
+            bottom: 20px;
+            left: 50%;
+            transform: translate(-50%);
+            transition: .25s;
+        }
+
+        #send-Button.active:hover {
+            cursor: pointer;
+            background: rgb(0, 132, 255, 0.9);
+            transition: .25s;
+        }
+
+        #new-Game {
+            font-size: 17.5px;
+            padding: 10px 25px;
+            border-radius: 5px;
+            border: none;
+            background: rgb(0, 132, 255);
+            color: white;
+            opacity: 0;
+            z-index: -1;
+            position: fixed;
+            bottom: 20px;
+            left: 50%;
+            transform: translate(-50%);
+            transition: .25s;
+        }
+
+        #new-Game:hover {
+            cursor: pointer;
+            background: rgb(0, 132, 255, 0.9);
+            transition: .25s;
+        }
+
+        #game-Board {
+            width:100%;
+            max-width:500px;
+            height:fit-content;
+            position: absolute;
+            overflow: scroll;
+            top:85px;
+            left: 50%;
+            transform: translate(-50%);
+            background: white;
+        }
+
+        #finding-Opponent {
+            display: flex;
+            color: white;
+            width:100%;
+            height:100%;
+            position: absolute;
+            top:50%;
+            left:50%;
+            background:rgba(0, 0, 0, 0.7);
+            justify-content: center;
+            align-items: center;
+            transform: translate(-50%, -50%);
+            transition: .25s;
+            opacity: 0;
+            z-index: -1;
+        }
+
+        #waiting-For-Opponent {
+            display: flex;
+            color: white;
+            width:100%;
+            height:100%;
+            position: absolute;
+            top:50%;
+            left:50%;
+            background:rgba(0, 0, 0, 0.7);
+            justify-content: center;
+            align-items: center;
+            transform: translate(-50%, -50%);
+            transition: .25s;
+            opacity: 0;
+            z-index: -1;
+        }
+
+        
+        #end-Screen {
+            display: flex;
+            color: white;
+            width:100%;
+            height:100%;
+            position: absolute;
+            top:50%;
+            left:50%;
+            background:rgba(0, 0, 0, 0.7);
+            justify-content: center;
+            align-items: center;
+            transform: translate(-50%, -50%);
+            transition: .25s;
+            opacity: 0;
+            z-index: -1;
+        }
+
+        #your-Score-End-Screen {
+            font-size: 30px;
+        }
+
+        #dash {
+            font-size: 30px;
+            margin-left: 50px;
+            margin-right: 50px;
+        }
+
+        #opponent-Score-End-Screen {
+            font-size: 30px;
+        }
+
+        #top-Text {
+            position: fixed;
+            top:calc(50% - 50px);
+            transform: translate(0px, -50%);
+            font-size: 25px;
+        }
+    }
+
+    #game-Name {
+        background: white;
+        width:fit-content;
+        height: fit-content;
+        padding:15px 30px;
+        border-radius:5px;
+        box-shadow: 0px 1px 3px 1px rgba(0, 0, 0, 0.1);
+        position:absolute;
+        top:10px;
+        left:50%;
+        transform:translate(-50%);
+        font-size:20px;
+        color: rgb(0, 100, 0);
+    }
+
+    #game-Board::-webkit-scrollbar {
+        width:0px;
+        height:5px;
+    }
+
+    #game-Board::-webkit-scrollbar-thumb {
+        background: rgb(0, 132, 255);
+    }
+    
+    .row-Container {
+        display: flex;
+        width:600px;
+        height:fit-content;
+    }
+
+    .row-Container:nth-child(even) {
+        background: rgb(225, 225, 225);
+    }
+
+    .category-Header {
+        width:100px;
+        height: 40px;
+        padding: 5px 20px;
+        display: flex;
+        color: white;
+        background:rgb(0, 35, 68);
+        align-items: center;
+        text-align: left;
+        border: 1px solid rgb(200, 200, 200);
+    }
+
+    .category-Header:nth-child(even) {
+        width:100px;
+        height: 40px;
+        padding: 5px 20px;
+        color: white;
+        display: flex;
+        align-items: center;
+        background:rgb(0, 132, 255);
+        text-align: left;
+        border: 1px solid rgb(200, 200, 200);
+    }
+
+    .category-Option {
+        height:25px;
+        padding-left: 10px;
+        padding: 5px 9px;
+        min-width:100px;
+        white-space: nowrap;
+        width:fit-content;
+        display: flex;
+        max-width: 120px;
+        overflow-x: scroll;
+        overflow-y: hidden;
+        align-items: center;
+        text-align: left;
+        border: 1px solid rgb(200, 200, 200);
+        font-size: 20px;
+    }
+
+    .category-Option::-webkit-scrollbar {
+        height: 0px;
+        width: 0px;
+    }
+
+    .text-Box-Category-Option {
+        padding: 5px 0px;
+        width:100%;
+        height:100%;
+        background: transparent;
+        border: none;
+        font-size: 20px;
+    }
+
+    input:focus {
+        outline: none;
+    }
+
+    .text-selection-none{
+        user-select: none; /* supported by Chrome and Opera */
+        -webkit-user-select: none; /* Safari */
+        -khtml-user-select: none; /* Konqueror HTML */
+        -moz-user-select: none; /* Firefox */
+        -ms-user-select: none;
+    }
+    
+    .points {
+        width:100%;
+        height: fit-content;
+        display: flex;
+    }
+
+    #your-Points-Container {
+        width:50px;
+        height:65px;
+        background: white;
+        position: relative;
+        overflow: hidden;
+        box-shadow: 0px 1px 3px 1px rgba(0, 0, 0, 0.1);
+        top: 10px;
+        left: 10px;
+        border-radius: 5px;
+    }
+    
+    #your-Points-Img-Container {
+        width:35px;
+        height:35px;
+        top: 5px;
+        border-radius: 100%;
+        background: rgb(235, 235, 235);
+        position: absolute;
+        left: 50%;
+        transform: translate(-50%);
+        overflow: hidden;
+    }
+
+    #your-Points-Img {
+        width:100%;
+    }
+
+    #your-Points-Count {
+        text-align: center;
+        width:100%;
+        position: absolute;
+        bottom: 3px;
+    }
+
+    #opponent-Points-Container {
+        width:50px;
+        height:65px;
+        background: white;
+        position: relative;
+        overflow: hidden;
+        box-shadow: 0px 1px 3px 1px rgba(0, 0, 0, 0.1);
+        top: 10px;
+        right: 10px;
+        margin-left: auto;
+        border-radius: 5px;
+    }
+    
+    #opponent-Points-Img-Container {
+        width:35px;
+        height:35px;
+        top: 5px;
+        border-radius: 100%;
+        background: rgb(235, 235, 235);
+        position: absolute;
+        left: 50%;
+        transform: translate(-50%);
+        overflow: hidden;
+    }
+
+    #opponent-Points-Img {
+        width:100%;
+    }
+
+    #opponent-Points-Count {
+        text-align: center;
+        width:100%;
+        position: absolute;
+        bottom: 3px;
+    }
+
+    #error-Holder {
+        width:100%;
+        height:80px;
+        background:none;
+        position:absolute;
+        overflow: hidden;
+        top:0px;
+        left:0px;
+    }
+    
+    .show-Error {
+        width:calc(100% - 50px);
+        padding:10px;
+        color: white;
+        background:rgb(255, 58, 58);
+        border-radius:5px;
+        position:absolute;
+        left: 50%;
+        box-shadow: 0px 1px 3px 1px rgba(0, 0, 0, 0.1);
+        transform: translate(-50%);
+        top:-100px;
+        animation: showNotification 5s forwards;
+    }
+
+    @keyframes showNotification {
+        0% {
+            top: -100px;
+        }
+
+        10% {
+            top:10px;
+        }
+
+        90% {
+            top:10px;
+        }
+
+        100% {
+            top: -100px;
+        }
+    }
+</style>
+<body>
+    <div id="game-Container">
+        <div class="points">
+            <div id="your-Points-Container">
+                <div id="your-Points-Img-Container">
+                    <img id="your-Points-Img" src="https://picsum.photos/2943" alt="">
+                </div>
+                <div id="your-Points-Count">-</div>
+            </div>
+            <div id="opponent-Points-Container">
+                <div id="opponent-Points-Img-Container">
+                    <img id="opponent-Points-Img" src="https://picsum.photos/2900" alt="">
+                </div>
+                <div id="opponent-Points-Count">-</div>
+            </div>
+        </div>
+        <div id="game-Name">Categories</div>
+        <div id="game-Board">
+            <div class="row-Container">
+                <div class="category-Header">Letters</div>
+                <div class="category-Header"></div>
+                <div class="category-Header"></div>
+                <div class="category-Header"></div>
+                <div class="category-Header"></div>
+            </div>
+            <div class="row-Container">
+                <div class="category-Option letter"></div>
+                <div class="category-Option row-Num-One"><input type="text" class="text-Box-Category-Option"></div>
+                <div class="category-Option row-Num-One"><input type="text" class="text-Box-Category-Option"></div>
+                <div class="category-Option row-Num-One"><input type="text" class="text-Box-Category-Option"></div>
+                <div class="category-Option row-Num-One"><input type="text" class="text-Box-Category-Option"></div>
+            </div>
+            <div class="row-Container">
+                <div class="category-Option letter"></div>
+                <div class="category-Option row-Num-Two"></div>  
+                <div class="category-Option row-Num-Two"></div>
+                <div class="category-Option row-Num-Two"></div>  
+                <div class="category-Option row-Num-Two"></div>
+            </div>
+            <div class="row-Container">
+                <div class="category-Option letter"></div>
+                <div class="category-Option row-Num-Three"></div>  
+                <div class="category-Option row-Num-Three"></div>
+                <div class="category-Option row-Num-Three"></div>  
+                <div class="category-Option row-Num-Three"></div>
+            </div>
+            <div class="row-Container">
+                <div class="category-Option letter"></div>
+                <div class="category-Option row-Num-Four"></div>  
+                <div class="category-Option row-Num-Four"></div>
+                <div class="category-Option row-Num-Four"></div>  
+                <div class="category-Option row-Num-Four"></div>
+            </div>
+            <div class="row-Container">
+                <div class="category-Option letter"></div>
+                <div class="category-Option row-Num-Five"></div>  
+                <div class="category-Option row-Num-Five"></div>
+                <div class="category-Option row-Num-Five"></div>  
+                <div class="category-Option row-Num-Five"></div>
+            </div>
+        </div>
+        <button id="send-Button" onclick="sendGame()">Send</button>
+        <div id="end-Screen">
+            <div id="top-Text"></div>
+            <div id="your-Score-End-Screen">-</div>
+            <div id="dash">-</div>
+            <div id="opponent-Score-End-Screen">-</div>
+        </div>
+        <button id="new-Game" onclick="newGame()">Find New Game</button>
+        <div id="error-Holder"></div>
+        <div id="waiting-For-Opponent"><span id="waiting-For-Opponent-Text"></span></div>
+        <div id="finding-Opponent"><span id="finding-Opponent-Text"></span></div>
+    </div>
+
+    <script src="https://apis.google.com/js/platform.js" async defer></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js" 
+        integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM" 
+        crossorigin="anonymous"></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+</body>
+</html>
+
+
+
+
+
+
+
+
+
+<!-- 
+    @media (min-width:500px) {
+        body {
+            user-select: none;
+            width:100vw;
+            height:100vh;
+            margin:0px;
+            background: rgb(245, 245, 245);
+        }
+
+        #game-Name {
+            background: white;
+            width:fit-content;
+            height: fit-content;
+            padding:15px 30px;
+            border-radius:5px;
+            box-shadow:0px 1px 3px 1px rgba(0, 0, 0, 0.1);
+            position:absolute;
+            top:25px;
+            left:50%;
+            transform:translate(-50%);
+            font-size:20px;
+            color: rgb(0, 100, 0);
+        }
+
+        #game-Board {
+            width:calc(100vw - 50px);
+            max-width:500px;
+            box-shadow: 0px 1px 3px 1px rgba(0, 0, 0, 0.1);
+            border-radius:5px;
+            height:fit-content;
+            position: absolute;
+            overflow: scroll;
+            top:100px;
+            left: 50%;
+            transform: translate(-50%);
+            background: white;
+        }
+
+        #game-Board::-webkit-scrollbar {
+            width:0px;
+            height:5px;
+        }
+
+        #game-Board::-webkit-scrollbar-thumb {
+            background: rgb(0, 132, 255);
+            border-radius: 5px;
+        }
+        
+        .row-Container {
+            display: flex;
+            width:600px;
+            height:fit-content;
+        }
+
+        .row-Container:nth-child(even) {
+            background: rgb(225, 225, 225);
+        }
+
+        .category-Header {
+            width:100px;
+            height: 40px;
+            padding: 5px 20px;
+            display: flex;
+            color: white;
+            background:rgb(0, 35, 68);
+            align-items: center;
+            text-align: left;
+            border: 1px solid rgb(200, 200, 200);
+        }
+
+        .category-Header:nth-child(even) {
+            width:100px;
+            height: 40px;
+            padding: 5px 20px;
+            color: white;
+            display: flex;
+            align-items: center;
+            background:rgb(0, 132, 255);
+            text-align: left;
+            border: 1px solid rgb(200, 200, 200);
+        }
+
+        .category-Option {
+            height:25px;
+            padding: 5px 9px;
+            min-width:100px;
+            width:fit-content;
+            display: flex;
+            max-width: 120px;
+            overflow: hidden;
+            align-items: center;
+            text-align: left;
+            border: 1px solid rgb(200, 200, 200);
+        }
+
+        .text-Box-Category-Option {
+            padding: 5px 5px;
+            width:100%;
+            height:100%;
+            background: transparent;
+            border: none;
+            font-size: 20px;
+        }
+
+        input:focus {
+            outline: none;
+        }
+
+        .text-selection-none{
+            user-select: none; /* supported by Chrome and Opera */
+            -webkit-user-select: none; /* Safari */
+            -khtml-user-select: none; /* Konqueror HTML */
+            -moz-user-select: none; /* Firefox */
+            -ms-user-select: none;
+        }
+    } -->
