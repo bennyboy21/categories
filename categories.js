@@ -36,13 +36,14 @@ var opponentsScore = 0
 var scoreUpdated = false
 
 const firebaseConfig = {
-    apiKey: "AIzaSyAIvg1mPJ-_98qdTgtsTklNIiqmrl9SWe8",
-    authDomain: "categories52.firebaseapp.com",
-    projectId: "categories52",
-    storageBucket: "categories52.appspot.com",
-    messagingSenderId: "842920820272",
-    appId: "1:842920820272:web:7d8a4fb6a61a49441977f5",
-    measurementId: "G-10N3YM5LW8"
+  apiKey: "AIzaSyDOrwFpiYuD7Fatx5P4YKqO-vM6quVrYRM",
+  authDomain: "dateyet-a69a0.firebaseapp.com",
+  databaseURL: "https://dateyet-a69a0-default-rtdb.firebaseio.com",
+  projectId: "dateyet-a69a0",
+  storageBucket: "dateyet-a69a0.appspot.com",
+  messagingSenderId: "68054972373",
+  appId: "1:68054972373:web:108f33f587f6908bf3ef5c",
+  measurementId: "G-TVZPWBWJ7P"
 };
 
 // Initialize Firebase
